@@ -70,27 +70,27 @@ module "kubectl_config" {
 }
 
 #Initialize and configure helm
-module "helm_init" {
-  source          = "modules/helm"
-  kubeconfig_file = "${module.kubectl_config.kubeconfig_file}"
+# module "helm_init" {
+#   source          = "modules/helm"
+#   kubeconfig_file = "${module.kubectl_config.kubeconfig_file}"
 
-  # Wait for kubectl config to complete. ** Workaround for missing module dependency in terraform **
-  # Refer https://medium.com/@bonya/terraform-adding-depends-on-to-your-custom-modules-453754a8043e
-  depends_on = [
-    "${module.kubectl_config.kubeconfig_setup_id}",
-  ]
-}
+#   # Wait for kubectl config to complete. ** Workaround for missing module dependency in terraform **
+#   # Refer https://medium.com/@bonya/terraform-adding-depends-on-to-your-custom-modules-453754a8043e
+#   depends_on = [
+#     "${module.kubectl_config.kubeconfig_setup_id}",
+#   ]
+# }
 
-# Install spinnaker chart
-module "deploy_spinnaker" {
-  source          = "modules/spinnaker"
-  project         = "${var.project}"
-  gcs_location    = "${var.gcs_location}"
-  kubeconfig_file = "${module.kubectl_config.kubeconfig_file}"
-  host            = "${module.gke_cluster.host}"
+# # Install spinnaker chart
+# module "deploy_spinnaker" {
+#   source          = "modules/spinnaker"
+#   project         = "${var.project}"
+#   gcs_location    = "${var.gcs_location}"
+#   kubeconfig_file = "${module.kubectl_config.kubeconfig_file}"
+#   host            = "${module.gke_cluster.host}"
 
-  # Wait for helm init to complete.
-  depends_on = [
-    "${module.helm_init.init_id}",
-  ]
-}
+#   # Wait for helm init to complete.
+#   depends_on = [
+#     "${module.helm_init.init_id}",
+#   ]
+# }

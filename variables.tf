@@ -4,7 +4,7 @@ variable "credential" {
 }
 
 variable "project" {
-  default     = "mani-learn-gcp"
+  default     = "gke-terraform-213404"
   description = "The ID of the project to apply any resources to."
 }
 

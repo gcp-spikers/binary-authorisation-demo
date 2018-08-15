@@ -33,7 +33,7 @@ variable "machine_type" {
 }
 
 variable "min_master_version" {
-  default     = "1.10.5-gke.3"
+  default     = "1.10.4-gke.3"
   description = "The minimum version of the master"
 }
 
