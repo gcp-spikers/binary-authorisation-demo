@@ -17,7 +17,6 @@ variable "gcs_location" {
 }
 
 variable "name" {
-  default = "spinnaker"
+  default = "binary-authorisation"
   description = "GKE cluster name"
 }
-

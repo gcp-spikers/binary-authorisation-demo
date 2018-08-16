@@ -43,6 +43,13 @@ module "gke_cluster" {
   machine_type       = "n1-standard-4"
 }
 
+module "binary_authorisation" {
+  source             = "modules/binaryauthorisation"
+  depends_on = [
+    "${module.gke_cluster.id}",
+  ]
+}
+
 # k8s provider is used for installing helm
 provider "kubernetes" {
   load_config_file       = false
