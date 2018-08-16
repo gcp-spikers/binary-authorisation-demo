@@ -7,7 +7,6 @@
     * [gcloud SDK](https://cloud.google.com/sdk/install)
     * [kubectl](https://cloud.google.com/kubernetes-engine/docs/quickstart) (`gcloud components install kubectl`)
     * [terraform](https://www.terraform.io/intro/getting-started/install.html)
-    * [helm CLI](https://docs.helm.sh/using_helm/#installing-helm)
     
 ### Variables
 * `credential`: Contents of a file that contains terraform service account private key in JSON format.
