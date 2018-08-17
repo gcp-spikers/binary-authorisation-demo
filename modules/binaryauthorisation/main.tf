@@ -1,8 +1,8 @@
 
 data "template_file" "binaryauthorisation" {
-
   template = <<EOF
-gcloud beta container clusters update --enable-binauthz --zone $${zone} $${name}
+gcloud services enable containeranalysis.googleapis.com \
+&& gcloud beta container clusters update --enable-binauthz --zone $${zone} $${name}
 EOF
 
   vars {

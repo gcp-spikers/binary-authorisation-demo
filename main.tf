@@ -32,6 +32,7 @@ resource "google_project_services" "myproject" {
     "resourceviews.googleapis.com",
     "cloudbuild.googleapis.com",
     "sourcerepo.googleapis.com",
+    "binaryauthorization.googleapis.com",
   ]
 }
 
@@ -39,7 +40,7 @@ resource "google_project_services" "myproject" {
 module "gke_cluster" {
   source             = "modules/cluster"
   name               = "${var.name}"
-  initial_node_count = "3"
+  initial_node_count = "1"
   machine_type       = "n1-standard-4"
 }
 

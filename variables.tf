@@ -4,7 +4,7 @@ variable "credential" {
 }
 
 variable "project" {
-  default     = "gke-terraform-213404"
+  default     = "binary-authorisation"
   description = "The ID of the project to apply any resources to."
 }
 
