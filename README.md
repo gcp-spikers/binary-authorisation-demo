@@ -51,3 +51,89 @@
     ```
     
 6.  Access spinnaker UI at http://localhost:8080/ 
+
+## Setting up attestor
+
+As the API is subject to change, if issues arise reference [the official article][binauthz-attestors]
+
+**NB: much of this will ideally be done via Terraform once the Binauth+CA providers are up to scratch**
+
+1. Set note ID variable (this is whatever your parent authority) and human readable description
+    ```shell
+    export NOTE_ID="test-attestor-note"
+    export NOTE_DESCRIPTION="Test Attestor Note"
+    export PAYLOAD_PATH="/tmp"
+    export PAYLOAD_FILE="${PAYLOAD_PATH}/ca_note_payload.json"
+    ```
+1. Create Container Analysis (grafeas) payload
+    ```shell
+    cat > ${PAYLOAD_FILE} <<EOM
+    {
+        "name": "projects/${PROJECT_ID}/notes/${NOTE_ID}",
+        "attestation_authority": {
+            "hint": {
+                "human_readable_name": "${NOTE_DESCRIPTION}"
+            }
+        }
+    }
+    EOM
+    ```
+1. Create the note
+    ```shell
+    curl --request POST \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+        --data-binary @${PAYLOAD_FILE} \
+        "https://containeranalysis.googleapis.com/v1beta1/projects/${PROJECT_ID}/notes/?noteId=${NOTE_ID}"
+    ```
+1. Verify note was created
+    ```shell
+    curl \
+        -H "Authorization: Bearer $(gcloud auth print-access-token)" `
+        "https://containeranalysis.googleapis.com/v1beta1/projects/${PROJECT_ID}/notes/"
+    ```
+1. Create IAM payload 
+    ```shell
+    cat > "${PAYLOAD_PATH}/iam_request.json" <<EOM
+    {
+        "resource": "projects/${PROJECT_ID}/notes/${NOTE_ID}",
+        "policy": {
+            "bindings": [
+                {
+                    "role": "roles/containeranalysis.notes.occurrences.viewer",
+                    "members": [
+                        "serviceAccount:${ATTESTOR_SERVICE_ACCOUNT}"
+                    ]
+                }
+            ]
+        }
+    }
+    EOM
+    ```
+1. Add the service account + requested roles
+    ```shell
+    curl -X POST \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+        --data-binary @/tmp/iam_request.json \
+        "https://containeranalysis.googleapis.com/v1alpha1/projects/${PROJECT_ID}/notes/${NOTE_ID}:setIamPolicy"
+
+### Generation of key pairs
+
+The [official article][binauthz-attestors] shows generation via gpg, however we're using Vault - full instructions are in the 
+
+
+
+
+
+
+<!-- 
+
+
+References and links 
+
+
+-->
+
+[binauthz-attestors]: https://cloud.google.com/binary-authorization/docs/creating-attestors
+[vault-on-gke]: https://github.com/gcp-spikers/vault-on-gke-no-project
